@@ -1,40 +1,21 @@
-// helper function
 
-const RADIUS = 20;
 
-function degToRad(degrees) {
-  var result = Math.PI / 180 * degrees;
-  return result;
-}
-
-// setup of the canvas
-
-var canvas = document.querySelector('canvas');
-var ctx = canvas.getContext('2d');
+var lockIt = document.getElementById('lock');
 
 var x = 50;
 var y = 50;
 
-function canvasDraw() {
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#f00";
-  ctx.beginPath();
-  ctx.arc(x, y, RADIUS, 0, degToRad(360), true);
-  ctx.fill();
-}
-canvasDraw();
 
 // pointer lock object forking for cross browser
 
-canvas.requestPointerLock = canvas.requestPointerLock ||
-                            canvas.mozRequestPointerLock;
+lockIt.requestPointerLock = lockIt.requestPointerLock ||
+                            lockIt.mozRequestPointerLock;
 
 document.exitPointerLock = document.exitPointerLock ||
                            document.mozExitPointerLock;
 
-canvas.onclick = function() {
-  canvas.requestPointerLock();
+lockIt.onclick = function() {
+  lockIt.requestPointerLock();
 };
 
 // pointer lock event listeners
@@ -44,8 +25,8 @@ document.addEventListener('pointerlockchange', lockChangeAlert, false);
 document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
 
 function lockChangeAlert() {
-  if (document.pointerLockElement === canvas ||
-      document.mozPointerLockElement === canvas) {
+  if (document.pointerLockElement === lockIt ||
+      document.mozPointerLockElement === lockIt) {
     console.log('The pointer lock status is now locked');
     document.addEventListener("mousemove", updatePosition, false);
   } else {
@@ -56,10 +37,20 @@ function lockChangeAlert() {
 
 var tracker = document.getElementById('tracker');
 
-var animation;
 function updatePosition(e) {
   x += e.movementX;
   y += e.movementY;
-  
-  tracker.textContent = "X position: " + x + ", Y position: " + y;
+  if(x > 255){
+    x = 0;
+  }else if(x < (-255) ){
+    x = 0;
+  }
+  if(y > 255){
+    y = 0;
+  }else if(y <  (-255) ){
+    y = 0;
+  }
+
+  //tracker.textContent = "X position: " + x + ", Y position: " + y;
+  console.log('x: '+x+ ' -y: '+y);
 }
